@@ -51,6 +51,7 @@ In addition to the environment variables shown above, there are a number of othe
 | `DD_AGENT_VERSION`           | *Optional.* By default, the buildpack installs the latest version of the Datadog Agent available in the package repository. Use this variable to install older versions of the Datadog Agent (note that not all versions of the Agent may be available).|
 | `DD_DISABLE_HOST_METRICS`    | *Optional.* By default, the buildpack reports system metrics for the host machine running the dyno. Set this to `true` to disable system metrics collection. See the [system metrics section](#system-metrics) below for more information.|
 | `DD_PYTHON_VERSION`          | *Optional.* Starting with version `6.14.0`, Datadog Agent ships with Python versions `2` and `3`. The buildpack will only keep one of the versions. Set this to `2` or `3` to select the Python version you want the agent to keep. If not set, the buildpack will keep `2` |
+| `DD_ENABLE_ON_DYNOS`         | *Optional.* A space-separated list of process types and/or dyno IDs. Set this to `web` to monitor only web dynos, or `web.1` to monitor a single web dyno.|
 
 For additional documentation, refer to the [Datadog Agent documentation][9].
 
@@ -59,6 +60,13 @@ For additional documentation, refer to the [Datadog Agent documentation][9].
 Heroku dynos are ephemeral—they can move to different host machines whenever new code is deployed, configuration changes are made, or resouce needs/availability changes. This makes Heroku flexible and responsive, but can potentially lead to a high number of reported hosts in Datadog. Datadog bills on a per-host basis, and the buildpack default is to report actual hosts, which can lead to higher than expected costs.
 
 Depending on your use case, you may want to set your hostname so that hosts are aggregated and report a lower number.  To do this, Set `DD_DYNO_HOST` to `true`. This will cause the Agent to report the hostname as the app and dyno name (e.g. `appname.web.1` or `appname.run.1234`) and your host count will closely match your dyno usage. One drawback is that you may see some metrics continuity errors whenever a dyno is cycled.
+
+## Running the agent on specific dynos
+
+By default, the buildpack starts the agent on all dynos. You can restrict it to run on a subset of your dynos by setting the `DD_ENABLE_ON_DYNOS` environment variable.
+
+For example, to run the agent on all `web` dynos, only two `worker` dynos, and *no other dynos*, you can set:
+ - `DD_ENABLE_ON_DYNOS="web worker.1 worker.2"`
 
 ## System metrics
 

@@ -5,6 +5,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased & outstanding issues]
+- Add `DD_ENABLE_ON_DYNOS` option
 - Non-https repo url and apt fetching
 
 ## [1.6.5] - 2019-07-31

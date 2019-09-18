@@ -79,6 +79,22 @@ if [ -z "$DD_API_KEY" ]; then
   DISABLE_DATADOG_AGENT=1
 fi
 
+if [ -z "$DISABLE_DATADOG_AGENT" ]; then
+  # Check if the agent is conditionally enabled
+  if [ -n "$DD_ENABLE_ON_DYNOS" ]; then
+    # Disable the agent unless this dyno's ID or process type is in the whitelist
+    DISABLE_DATADOG_AGENT=1
+    for WHITELISTED_DYNO in $DD_ENABLE_ON_DYNOS
+    do
+        if [ "$DYNO" == "$WHITELISTED_DYNO" ] || [ "$DYNOTYPE" == "$WHITELISTED_DYNO" ]; then
+          echo "Enabling the agent because dyno '$DYNO' is whitelisted"
+          unset DISABLE_DATADOG_AGENT
+          break
+        fi
+    done
+  fi
+fi
+
 if [ -z "$DD_HOSTNAME" ]; then
   if [ "$DD_DYNO_HOST" == "true" ]; then
     # Set the hostname to dyno name and ensure rfc1123 compliance.
